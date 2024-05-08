@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    let emojis = ["👻","🎃","👽","🕷️","👺","🥷","🧛🏻‍♂️","🦇","👻","🎃","👽","🕷️","👺","🥷","🧛🏻‍♂️","🦇"]
+    let emojis = ["👻","🎃","👽","🕷️","👺","🥷","🧛🏻‍♂️","🦇","👻","🎃","👽","🕷️","👺","🥷","🧛🏻‍♂️","🦇","👺","🥷","🧛🏻‍♂️","🦇"]
     
     @State var cardCount = 4
     
@@ -55,8 +55,9 @@ struct ContentView: View {
         }, label: {
             Image(systemName: symbol)
            })
+        .imageScale(.large)
+        .font(.largeTitle)
         .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
-        
     }
     
     var cardRemover: some View{
