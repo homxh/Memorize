@@ -8,42 +8,72 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    let emojis = ["👻","🎃","👽","🕷️","👺","🥷","🧛🏻‍♂️","🦇","👻","🎃","👽","🕷️","👺","🥷","🧛🏻‍♂️","🦇"]
+    
+    @State var cardCount = 4
+    
     var body: some View {
-//        VStack(alignment: .center, spacing: 10 {
-//            Image(systemName: "globe")
-//                .foregroundColor(Color.red)
-//                .imageScale(.large)
-//                .foregroundStyle(.tint)
-//            Text("Hello, world!")
-//        })
+        //        VStack(alignment: .center, spacing: 10 {
+        //            Image(systemName: "globe")
+        //                .foregroundColor(Color.red)
+        //                .imageScale(.large)
+        //                .foregroundStyle(.tint)
+        //            Text("Hello, world!")
+        //        })
         //trailing closure syntax
         
-        HStack(){
-//            let emojis: Array<String> = ["👻","🎃","👽","🕷️"]
-//            let emojis: [String] = ["👻","🎃","👽","🕷️"]
-            let emojis = ["👻","🎃","👽","🕷️"]
-            ForEach(emojis.indices, id: \.self){
-                index in
-                CardView(content: emojis[index] )
-            }
-            
+        VStack{
+            cards
+            Spacer()
+            cardCountAdjusters
         }
-            
-        //Another way to declare a VStack function(ViewBuilder), only 3 things can do in the curly brace:
-        //1 list of Views
-        //2 have conditionals, if thens
-        //3 declare local variables
-        
-        .foregroundColor(.orange)
         .padding()
+    }
+    
+    var cards: some View{
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
+            ForEach(0..<cardCount, id: \.self){
+                index in
+                CardView(content: emojis[index])
+            }
+        }
+        .foregroundColor(.orange)
+    }
+    
+    var cardCountAdjusters: some View{
+        HStack{
+            cardRemover
+            Spacer()
+            cardAdder
+        }
+    }
+        
+    func cardCountAdjuster(by offset: Int, symbol: String)-> some View{
+        Button(action: {
+            cardCount += offset
+        }, label: {
+            Image(systemName: symbol)
+           })
+        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
+        
+    }
+    
+    var cardRemover: some View{
+        cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
+    }
+    
+    var cardAdder: some View{
+        cardCountAdjuster(by: +1, symbol: "rectangle.stack.badge.plus.fill")
+    }
+
         
         //    The above part after 'View' is Computed Property
         //    1 creating instances of structs, 'Image(systemName: "globe")'
         //    2 named parameters, ' systemName: "globe" '
         //    3 parameter defaults
-        
-    }
 }
+
 
 struct CardView: View{
     let content: String
@@ -58,19 +88,29 @@ struct CardView: View{
             //                View modifier
             
             let base: RoundedRectangle = RoundedRectangle(cornerRadius: 12)
-            if isFaceUp{
-                
-                base.strokeBorder(lineWidth: 5)
+//            if isFaceUp{
+//                
+//                base.strokeBorder(lineWidth: 8)
+//                base.fill(.white)
+//                
+//                Text(content)
+//                    .font(.largeTitle)
+//                    .textScale(.default)
+//            }
+//            
+//            else{
+//                
+//            }
+//            base.fill().opacity(isFaceUp ? 0 : 1)
+            Group {
                 base.fill(.white)
-                
-                Text(content)
-                    .font(.largeTitle)
-                    .textScale(.default)
+                base.strokeBorder(lineWidth: 2)
+                Text(content).font(.largeTitle)
             }
+            .opacity(isFaceUp ? 1 : 0)
+            base.fill().opacity(isFaceUp ? 0 : 1)
             
-            else{
-                base.fill()
-            }
+            
         }.onTapGesture{
 //            isFaceUp = !isFaceUp
             isFaceUp.toggle()
